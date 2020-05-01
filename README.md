@@ -1,23 +1,52 @@
 # GenstageEscript
 
-**TODO: Add description**
+## Description
 
-## Installation
+Basic example of using GenStage from an escript. Either Producer or
+Consumer can terminate the flow of events.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `genstage_escript` to your list of dependencies in `mix.exs`:
+The intent is to demonstrate how to run a basic GenStage from escript. Some examples of use
 
-```elixir
-def deps do
-  [
-    {:genstage_escript, "~> 0.1.0"}
-  ]
-end
+  * webscraper, Producer scrapes, Consumer saves relevant data
+  * Producer generates data (images), Consume processes data
+
+## Build
+
+```
+mix deps.get
+mix deps.compile
+mix escript.build
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/genstage_escript](https://hexdocs.pm/genstage_escript).
+## Running
 
-
-
+```
+./genstage_escript  --from 0 --count 100 --consume 50
+Command Line: ["--from", "0", "--count", "50", "--consume", "10"]
+%Optimus.ParseResult{
+  args: %{},
+  flags: %{},
+  options: %{consume: 10, count: 50, from: 0},
+  unknown: []
+}
+GenstageExample.Producer, state: {0, 50}
+GenstageExample.Consumer, state 10
+Main monitors
+GenstageExample.Producer, demand 10 from 0 count 50}
+GenstageExample.Consumer, state 10, received 5 events from {#PID<0.96.0>, #Reference<0.2528398565.4225236997.58117>}
+Consume 0
+Consume 1
+Consume 2
+Consume 3
+Consume 4
+GenstageExample.Consumer, state 5, received 5 events from {#PID<0.96.0>, #Reference<0.2528398565.4225236997.58117>}
+GenstageExample.Producer, demand 5 from 10 count 40}
+Consume 5
+Consume 6
+Consume 7
+Consume 8
+Consume 9
+GenstageExample.Consumer stopping
+Process #PID<0.97.0> is down
+Gentle exit
+```
