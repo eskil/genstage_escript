@@ -36,6 +36,7 @@ defmodule Commandline.CLI do
       options: [
         from: [
           value_name: "FROM",
+          long: "--from",
           short: "-f",
           help: "Start value for Producer",
           required: false,
@@ -44,7 +45,8 @@ defmodule Commandline.CLI do
         ],
         count: [
           value_name: "COUNT",
-          short: "-t",
+          long: "--count",
+          short: "-c",
           help: "Number of values to Produce",
           required: false,
           parser: :integer,
@@ -52,7 +54,8 @@ defmodule Commandline.CLI do
         ],
         consume: [
           value_name: "CONSUME",
-          short: "-c",
+          long: "--consume",
+          short: "-n",
           help: "Events Consumer should process",
           required: false,
           parser: :integer,
