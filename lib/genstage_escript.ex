@@ -1,60 +1,79 @@
 defmodule Commandline.CLI do
   @moduledoc """
   Example escript with genstage producer/consumer
-  
-  Starts a producer that produces numbers from "from", and a consumer
-  that stops when it has consumed "count" events.
-  
+
+  Starts a producer that produces "count" numbers from "from", and a
+  consumer that stops when it has consumed "consume" events.
+
+  The intent is to demonstrate how to use a GenStage from an
+  escript. Actual uses could eg. be scrape webpages from the Producer
+  and process them in the Consumer.
+
+  The purpose of "from"/"count" separate from "consume" is to
+  demonstrate either of them reaching a stop condition and terminating
+  the program.
+
   Usage
     --from <start-number>
     --count <number-events>
+    --consume <number-events>
 
   Example
 
-  ./genstage_escript --from 0 --count 10
+  ./genstage_escript --from 0 --count 100 --consume 50
   """
-    
-  defp help() do
-    IO.puts @moduledoc
-    System.halt(0)
-  end
-  
-  defp parse_args(args) do
-    IO.inspect args, label: "Command Line"
-    {options, arguments, invalid} = OptionParser.parse(
-      args,
-      strict: [
-        from: :integer,
-        count: :integer,
-	help: :boolean
-      ],
-      aliases: [h: :help]
+
+  defp parse_args(argv) do
+    IO.inspect argv, label: "Command Line"
+    Optimus.new!(
+      name: "genstage_escript",
+      description: "GenStage from CLI demonstration",
+      version: "1.0",
+      author: "Eskil Olsen",
+      about: "Example of how to use GenStage from an escript.",
+      allow_unknown_args: false,
+      parse_double_dash: true,
+      options: [
+        from: [
+          value_name: "FROM",
+          short: "-f",
+          help: "Start value for Producer",
+          required: false,
+          parser: :integer,
+          default: 0
+        ],
+        count: [
+          value_name: "COUNT",
+          short: "-t",
+          help: "Number of values to Produce",
+          required: false,
+          parser: :integer,
+          default: 100
+        ],
+        consume: [
+          value_name: "CONSUME",
+          short: "-c",
+          help: "Events Consumer should process",
+          required: false,
+          parser: :integer,
+          default: 50
+        ]
+      ]
     )
-    IO.inspect arguments, label: "Command Line Arguments"
-    IO.inspect options, label: "Command Line Options"
-    IO.inspect invalid, label: "Command Line Invalids"
-    
-    _ = case invalid != [] do
-      true  -> help()
-      _ -> nil
-    end
-
-    case options[:help] do
-      true  -> help()
-      _ -> {options, arguments, invalid}
-    end
+    |> Optimus.parse!(argv)
+    |> IO.inspect
   end
 
-  defp process({options, _arguments, _invalid}) do 
+  defp process(%Optimus.ParseResult{options: options}) do
     # Setup producer and consumer
-    {:ok, producer} = GenStage.start_link(GenstageExample.Producer, options[:from])
-    {:ok, consumer} = GenStage.start_link(GenstageExample.Consumer, options[:count])
+    {:ok, producer} = GenStage.start_link(GenstageExample.Producer, {options[:from], options[:count]})
+    {:ok, consumer} = GenStage.start_link(GenstageExample.Consumer, options[:consume])
     {:ok, _subscription} = GenStage.sync_subscribe(consumer,
       to: producer,
       cancel: :permanent,
       min_demand: 5,
       max_demand: 10)
-    
+
     # Wait for consumer to end
     ref = Process.monitor(consumer)
     IO.puts "Main monitors"

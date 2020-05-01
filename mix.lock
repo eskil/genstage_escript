@@ -1,3 +1,5 @@
 %{
-  "gen_stage": {:hex, :gen_stage, "0.14.3", "d0c66f1c87faa301c1a85a809a3ee9097a4264b2edf7644bf5c123237ef732bf", [:mix], [], "hexpm", "8453e2289d94c3199396eb517d65d6715ef26bcae0ee83eb5ff7a84445458d76"},
+  "gen_stage": {:hex, :gen_stage, "0.14.3", "d0c66f1c87faa301c1a85a809a3ee9097a4264b2edf7644bf5c123237ef732bf", [:mix], [], "hexpm"},
+  "optimus": {:hex, :optimus, "0.1.10", "068a67ec9b59ef71ab895fb257b889c8df56188e5c01a1ce0f65b2f21f128201", [:mix], [{:yamerl, "~> 0.6", [hex: :yamerl, repo: "hexpm", optional: false]}], "hexpm"},
+  "yamerl": {:hex, :yamerl, "0.8.0", "8214cfe16bbabe5d1d6c14a14aea11c784b9a21903dd6a7c74f8ce180adae5c7", [:rebar3], [], "hexpm"},
 }
