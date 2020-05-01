@@ -24,6 +24,7 @@ defmodule GenstageExample.Consumer do
     # otherwise return a :normal :stop.
     new_state = state - Enum.count(events)
     if new_state <= 0 do
+      IO.puts "GenstageExample.Consumer stopping"
       {:stop, :normal, new_state}
     else
       {:noreply, [], new_state}

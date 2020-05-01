@@ -12,12 +12,13 @@ defmodule GenstageExample.Producer do
     {:producer, state}
   end
 
-  def handle_demand(demand, {from, count}) do
-    # Generate resulting events
-    if count <= 0 do
-      {:stop, :normal, {from, count}}
-    end
+  def handle_demand(demand, {from, count}) when count <= 0 do
+    IO.puts "GenstageExample.Producer, demand #{demand} from #{from} count #{count}}"
+    {:stop, :normal, {from, count}}
+  end
 
+  def handle_demand(demand, {from, count}) do
+    IO.puts "GenstageExample.Producer, demand #{demand} from #{from} count #{count}}"
     demand = min(demand, count)
     events = Enum.to_list(from..from + demand - 1)
     {:noreply, events, {from + Enum.count(events), count -  + Enum.count(events)}}
