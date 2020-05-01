@@ -12,11 +12,13 @@ defmodule GenstageExample.Producer do
     {:producer, state}
   end
 
+  # Check if we're done
   def handle_demand(demand, {from, count}) when count <= 0 do
     IO.puts "GenstageExample.Producer, demand #{demand} from #{from} count #{count}}"
     {:stop, :normal, {from, count}}
   end
 
+  # Produce events for min of "demand" and "count" numbers form "from"
   def handle_demand(demand, {from, count}) do
     IO.puts "GenstageExample.Producer, demand #{demand} from #{from} count #{count}}"
     demand = min(demand, count)
